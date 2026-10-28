@@ -26,6 +26,7 @@ export type State = {
   incomes: Income[]
   expenses: Expense[]
   goals: Goal[]
+  startingBalance: number
 }
 
 export const CATEGORIES = [

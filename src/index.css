@@ -6,6 +6,8 @@ h1 { margin: 0; }
 header { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
 button.ghost { background: #e5e7eb; color: #111827; }
 .message { background: #fef3c7; padding: 8px 12px; border-radius: 8px; }
+.balance { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; color: #374151; }
+.balance input { width: 180px; padding: 8px; border: 1px solid #d1d5db; border-radius: 8px; font: inherit; }
 h2 { margin: 0 0 12px; font-size: 1.1rem; }
 .tagline { color: #6b7280; margin: 4px 0 20px; }
 .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 20px; }

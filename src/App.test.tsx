@@ -17,6 +17,13 @@ describe('App', () => {
     expect(within(card('Available now')).getByText(/100,000/)).toBeInTheDocument()
   })
 
+  it('starting balance feeds into available now', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    await user.type(screen.getByLabelText('Starting balance'), '250000')
+    expect(within(card('Available now')).getByText(/250,000/)).toBeInTheDocument()
+  })
+
   it('edits an existing expense', async () => {
     const user = userEvent.setup()
     render(<App />)

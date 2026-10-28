@@ -123,6 +123,18 @@ export default function App() {
       <p className="tagline">Know where your money is, where it's going, and what you can afford.</p>
       {message && <p role="status" className="message">{message}</p>}
 
+      <label className="balance">
+        Starting balance (RWF)
+        <input
+          aria-label="Starting balance"
+          type="number"
+          step="1"
+          value={state.startingBalance || ''}
+          placeholder="0"
+          onChange={(e) => setState((p) => ({ ...p, startingBalance: parseFloat(e.target.value) || 0 }))}
+        />
+      </label>
+
       <section className="cards">
         <Card label="Available now" value={s.available} hint="Received − paid − saved" />
         <Card label="Forecast" value={s.forecast} hint="After expected income & planned expenses" />

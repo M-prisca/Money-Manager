@@ -19,7 +19,7 @@ Code written, not yet run.
 Done when: tests and build are green and the manual browser check finds no bugs.
 
 ## Phase 1: Forecasting
-- [ ] Add a starting balance so "available" matches your real balance
+- [x] Add a starting balance so "available" matches your real balance (written, awaiting test and build run)
 - [ ] Recurring income and expenses (monthly), generated into dated entries
 - [ ] Month-by-month timeline showing the projected balance and where it goes negative
 - [ ] Goal deadlines with a suggested monthly contribution

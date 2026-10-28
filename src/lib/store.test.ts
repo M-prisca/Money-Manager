@@ -3,8 +3,13 @@ import { parseBackup } from './store'
 
 describe('parseBackup', () => {
   it('accepts a valid backup', () => {
+    const json = JSON.stringify({ incomes: [], expenses: [], goals: [], startingBalance: 5000 })
+    expect(parseBackup(json)).toEqual({ incomes: [], expenses: [], goals: [], startingBalance: 5000 })
+  })
+
+  it('defaults the starting balance for older backups', () => {
     const json = JSON.stringify({ incomes: [], expenses: [], goals: [] })
-    expect(parseBackup(json)).toEqual({ incomes: [], expenses: [], goals: [] })
+    expect(parseBackup(json)?.startingBalance).toBe(0)
   })
 
   it('rejects invalid JSON', () => {

@@ -9,7 +9,7 @@ export function summarize(s: State) {
   const planned = sum(s.expenses.filter((e) => !e.paid).map((e) => e.amount))
   const allocated = sum(s.goals.map((g) => g.saved))
 
-  const available = received - paid - allocated
+  const available = s.startingBalance + received - paid - allocated
   const forecast = available + expected - planned
   const safeToSpend = Math.max(0, Math.min(available, forecast))
 
