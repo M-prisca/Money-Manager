@@ -1,0 +1,36 @@
+:root { font-family: system-ui, sans-serif; color: #1f2937; background: #f3f4f6; }
+* { box-sizing: border-box; }
+body { margin: 0; }
+main { max-width: 1000px; margin: 0 auto; padding: 24px 16px 64px; }
+h1 { margin: 0; }
+header { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+button.ghost { background: #e5e7eb; color: #111827; }
+.message { background: #fef3c7; padding: 8px 12px; border-radius: 8px; }
+h2 { margin: 0 0 12px; font-size: 1.1rem; }
+.tagline { color: #6b7280; margin: 4px 0 20px; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 20px; }
+.card { background: #fff; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 4px; box-shadow: 0 1px 3px #0001; }
+.card strong { font-size: 1.6rem; }
+.card.accent { background: #059669; color: #fff; }
+.card.accent small { color: #d1fae5; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid section { background: #fff; border-radius: 12px; padding: 16px; box-shadow: 0 1px 3px #0001; }
+.wide { grid-column: 1 / -1; }
+@media (max-width: 760px) { .grid { grid-template-columns: 1fr; } }
+form { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+form input:not([type=checkbox]), select { flex: 1 1 110px; min-width: 0; padding: 8px; border: 1px solid #d1d5db; border-radius: 8px; font: inherit; }
+button { padding: 8px 12px; border: 0; border-radius: 8px; background: #111827; color: #fff; font: inherit; cursor: pointer; }
+button.x { background: none; color: #9ca3af; padding: 0 6px; font-size: 1.2rem; }
+ul { list-style: none; margin: 0; padding: 0; }
+li { display: grid; grid-template-columns: 1fr auto auto auto; gap: 8px; align-items: center; padding: 8px 0; border-top: 1px solid #f3f4f6; }
+li.done span { text-decoration: line-through; color: #9ca3af; }
+li small { color: #6b7280; }
+.check { display: flex; align-items: center; gap: 6px; }
+.empty { color: #9ca3af; display: block; }
+.pos { color: #059669; }
+.neg { color: #dc2626; }
+.goals { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+.goal { border: 1px solid #e5e7eb; border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 6px; }
+.row { display: flex; gap: 6px; justify-content: space-between; align-items: center; }
+.bar { height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden; }
+.bar div { height: 100%; background: #059669; }
