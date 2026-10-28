@@ -21,7 +21,7 @@ Done when: tests and build are green and the manual browser check finds no bugs.
 ## Phase 1: Forecasting
 - [x] Add a starting balance so "available" matches your real balance (written, awaiting test and build run)
 - [x] Recurring income and expenses (monthly), generated into dated entries (written, awaiting test and build run)
-- [ ] Month-by-month timeline showing the projected balance and where it goes negative
+- [x] Month-by-month timeline showing the projected balance and where it goes negative (written, awaiting test and build run)
 - [ ] Goal deadlines with a suggested monthly contribution
 - [ ] Tests for recurrence and timeline calculations
 

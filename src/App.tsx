@@ -2,10 +2,13 @@ import { useRef, useState } from 'react'
 import { summarize, money } from './lib/finance'
 import { useStore, uid, parseBackup } from './lib/store'
 import { generateEntries } from './lib/recurring'
+import { buildTimeline, firstShortfall } from './lib/timeline'
 import { CATEGORIES } from './lib/types'
 import type { Expense, Goal, Income } from './lib/types'
 
 const today = () => new Date().toISOString().slice(0, 10)
+const monthLabel = (ym: string) =>
+  new Date(`${ym}-01`).toLocaleDateString(undefined, { month: 'short', year: 'numeric', timeZone: 'UTC' })
 const emptyRec = () => ({ kind: 'expense' as 'income' | 'expense', name: '', amount: '', category: CATEGORIES[2], day: '1' })
 const emptyInc = () => ({ name: '', amount: '', date: today(), received: false })
 const emptyExp = () => ({ name: '', amount: '', category: CATEGORIES[0], date: today() })
@@ -14,6 +17,8 @@ const emptyGoal = () => ({ name: '', target: '' })
 export default function App() {
   const [state, setState] = useStore()
   const s = summarize(state)
+  const timeline = buildTimeline(state, today().slice(0, 7), 6)
+  const shortfall = firstShortfall(timeline)
 
   const [inc, setInc] = useState(emptyInc)
   const [exp, setExp] = useState(emptyExp)
@@ -165,6 +170,30 @@ export default function App() {
         <Card label="Forecast" value={s.forecast} hint="After expected income & planned expenses" />
         <Card label="Safe to spend" value={s.safeToSpend} hint="Won't break your plans" accent />
         <Card label="Saved for goals" value={s.allocated} hint="Allocated to goals" />
+      </section>
+
+      <section className="timeline">
+        <h2>Next 6 months</h2>
+        {shortfall ? (
+          <p role="alert" className="message">You would run short in {monthLabel(shortfall.month)}.</p>
+        ) : (
+          <p className="ok">No shortfall expected in the next 6 months.</p>
+        )}
+        <table>
+          <thead>
+            <tr><th>Month</th><th>Income</th><th>Expenses</th><th>Balance</th></tr>
+          </thead>
+          <tbody>
+            {timeline.map((r) => (
+              <tr key={r.month}>
+                <td>{monthLabel(r.month)}</td>
+                <td className="pos">{money(r.income)}</td>
+                <td className="neg">{money(r.expenses)}</td>
+                <td className={r.endBalance < 0 ? 'neg' : ''}><b>{money(r.endBalance)}</b></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </section>
 
       <div className="grid">

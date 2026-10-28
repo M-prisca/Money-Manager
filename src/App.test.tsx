@@ -38,6 +38,16 @@ describe('App', () => {
     expect(screen.getAllByLabelText('Paid: Netflix')).toHaveLength(3)
   })
 
+  it('warns when the timeline goes negative', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    expect(screen.getByText(/No shortfall expected/)).toBeInTheDocument()
+    await user.type(screen.getByLabelText('Expense name'), 'Trip')
+    await user.type(screen.getByLabelText('Expense amount'), '50000')
+    await user.click(screen.getAllByRole('button', { name: 'Add' })[1])
+    expect(screen.getByRole('alert')).toHaveTextContent('You would run short in')
+  })
+
   it('edits an existing expense', async () => {
     const user = userEvent.setup()
     render(<App />)
