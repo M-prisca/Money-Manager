@@ -22,6 +22,7 @@ export type Goal = {
   name: string
   target: number
   saved: number
+  deadline?: string
 }
 
 export type Recurring = {

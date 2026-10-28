@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { render, screen, within } from '@testing-library/react'
+import { fireEvent, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import App from './App'
 
@@ -46,6 +46,16 @@ describe('App', () => {
     await user.type(screen.getByLabelText('Expense amount'), '50000')
     await user.click(screen.getAllByRole('button', { name: 'Add' })[1])
     expect(screen.getByRole('alert')).toHaveTextContent('You would run short in')
+  })
+
+  it('shows overdue status for a goal past its deadline', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    await user.type(screen.getByLabelText('Goal name'), 'Laptop')
+    await user.type(screen.getByLabelText('Goal target'), '800000')
+    fireEvent.change(screen.getByLabelText('Goal deadline'), { target: { value: '2000-01-15' } })
+    await user.click(screen.getAllByRole('button', { name: 'Add' })[2])
+    expect(screen.getByText(/Overdue/)).toBeInTheDocument()
   })
 
   it('edits an existing expense', async () => {

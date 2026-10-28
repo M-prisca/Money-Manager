@@ -22,7 +22,7 @@ Done when: tests and build are green and the manual browser check finds no bugs.
 - [x] Add a starting balance so "available" matches your real balance (written, awaiting test and build run)
 - [x] Recurring income and expenses (monthly), generated into dated entries (written, awaiting test and build run)
 - [x] Month-by-month timeline showing the projected balance and where it goes negative (written, awaiting test and build run)
-- [ ] Goal deadlines with a suggested monthly contribution
+- [x] Goal deadlines with a suggested monthly contribution (written, awaiting test and build run)
 - [ ] Tests for recurrence and timeline calculations
 
 Done when: you can see, for each upcoming month, the projected balance and whether you run short.

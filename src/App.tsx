@@ -3,6 +3,7 @@ import { summarize, money } from './lib/finance'
 import { useStore, uid, parseBackup } from './lib/store'
 import { generateEntries } from './lib/recurring'
 import { buildTimeline, firstShortfall } from './lib/timeline'
+import { planGoal } from './lib/goals'
 import { CATEGORIES } from './lib/types'
 import type { Expense, Goal, Income } from './lib/types'
 
@@ -12,7 +13,7 @@ const monthLabel = (ym: string) =>
 const emptyRec = () => ({ kind: 'expense' as 'income' | 'expense', name: '', amount: '', category: CATEGORIES[2], day: '1' })
 const emptyInc = () => ({ name: '', amount: '', date: today(), received: false })
 const emptyExp = () => ({ name: '', amount: '', category: CATEGORIES[0], date: today() })
-const emptyGoal = () => ({ name: '', target: '' })
+const emptyGoal = () => ({ name: '', target: '', deadline: '' })
 
 export default function App() {
   const [state, setState] = useStore()
@@ -87,8 +88,8 @@ export default function App() {
     setState((p) => ({
       ...p,
       goals: editGoal
-        ? p.goals.map((x) => (x.id === editGoal ? { ...x, name: goal.name, target, saved: Math.min(x.saved, target) } : x))
-        : [...p.goals, { id: uid(), name: goal.name, target, saved: 0 }],
+        ? p.goals.map((x) => (x.id === editGoal ? { ...x, name: goal.name, target, saved: Math.min(x.saved, target), deadline: goal.deadline || undefined } : x))
+        : [...p.goals, { id: uid(), name: goal.name, target, saved: 0, deadline: goal.deadline || undefined }],
     }))
     setEditGoal(null)
     setGoal(emptyGoal())
@@ -104,7 +105,7 @@ export default function App() {
   }
   const startEditGoal = (g: Goal) => {
     setEditGoal(g.id)
-    setGoal({ name: g.name, target: String(g.target) })
+    setGoal({ name: g.name, target: String(g.target), deadline: g.deadline ?? '' })
   }
 
   const contribute = (id: string, delta: number) =>
@@ -310,6 +311,7 @@ export default function App() {
           <form onSubmit={submitGoal}>
             <input aria-label="Goal name" placeholder="Goal (e.g. Laptop)" value={goal.name} onChange={(e) => setGoal({ ...goal, name: e.target.value })} />
             <input aria-label="Goal target" type="number" min="0" step="1" placeholder="Target" value={goal.target} onChange={(e) => setGoal({ ...goal, target: e.target.value })} />
+            <input aria-label="Goal deadline" type="date" value={goal.deadline} onChange={(e) => setGoal({ ...goal, deadline: e.target.value })} />
             <button>{editGoal ? 'Save' : 'Add'}</button>
             {editGoal && <button type="button" className="ghost" onClick={() => { setEditGoal(null); setGoal(emptyGoal()) }}>Cancel</button>}
           </form>
@@ -325,6 +327,7 @@ export default function App() {
                 </div>
                 <div className="bar"><div style={{ width: `${(g.saved / g.target) * 100}%` }} /></div>
                 <small>{money(g.saved)} of {money(g.target)}</small>
+                <GoalPlanLine goal={g} />
                 <div className="row">
                   <button onClick={() => contribute(g.id, -1000)}>−1000</button>
                   <button onClick={() => contribute(g.id, 1000)}>+1000</button>
@@ -337,6 +340,18 @@ export default function App() {
         </section>
       </div>
     </main>
+  )
+}
+
+function GoalPlanLine({ goal }: { goal: Goal }) {
+  const plan = planGoal(goal, today().slice(0, 7))
+  if (!plan) return null
+  if (plan.remaining === 0) return <small className="ok">Goal reached</small>
+  if (plan.overdue) return <small className="neg">Overdue · {money(plan.remaining)} still missing</small>
+  return (
+    <small>
+      Due {monthLabel(goal.deadline!.slice(0, 7))} · save {money(plan.perMonth)}/month
+    </small>
   )
 }
 
