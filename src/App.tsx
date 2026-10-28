@@ -1,10 +1,12 @@
 import { useRef, useState } from 'react'
 import { summarize, money } from './lib/finance'
 import { useStore, uid, parseBackup } from './lib/store'
+import { generateEntries } from './lib/recurring'
 import { CATEGORIES } from './lib/types'
 import type { Expense, Goal, Income } from './lib/types'
 
 const today = () => new Date().toISOString().slice(0, 10)
+const emptyRec = () => ({ kind: 'expense' as 'income' | 'expense', name: '', amount: '', category: CATEGORIES[2], day: '1' })
 const emptyInc = () => ({ name: '', amount: '', date: today(), received: false })
 const emptyExp = () => ({ name: '', amount: '', category: CATEGORIES[0], date: today() })
 const emptyGoal = () => ({ name: '', target: '' })
@@ -20,7 +22,30 @@ export default function App() {
   const [editExp, setEditExp] = useState<string | null>(null)
   const [editGoal, setEditGoal] = useState<string | null>(null)
   const [message, setMessage] = useState('')
+  const [rec, setRec] = useState(emptyRec)
   const fileRef = useRef<HTMLInputElement>(null)
+
+  const addRecurring = (e: React.FormEvent) => {
+    e.preventDefault()
+    const amount = parseFloat(rec.amount)
+    const dayOfMonth = parseInt(rec.day, 10)
+    if (!rec.name || !(amount > 0) || !(dayOfMonth >= 1 && dayOfMonth <= 31)) return
+    setState((p) => ({
+      ...p,
+      recurring: [
+        ...p.recurring,
+        { id: uid(), kind: rec.kind, name: rec.name, amount, category: rec.category, dayOfMonth, startMonth: today().slice(0, 7) },
+      ],
+    }))
+    setRec(emptyRec())
+  }
+
+  const generateNext = () => {
+    const made = generateEntries(state, today().slice(0, 7), 3)
+    const count = made.incomes.length + made.expenses.length
+    setState((p) => ({ ...p, incomes: [...p.incomes, ...made.incomes], expenses: [...p.expenses, ...made.expenses] }))
+    setMessage(count ? `Added ${count} recurring entries for the next 3 months.` : 'Nothing new to add: the next 3 months are already generated.')
+  }
 
   const submitIncome = (e: React.FormEvent) => {
     e.preventDefault()
@@ -218,6 +243,37 @@ export default function App() {
             ))}
             {!state.expenses.length && <li className="empty">No expenses yet.</li>}
           </ul>
+        </section>
+
+        <section className="wide">
+          <h2>Recurring items</h2>
+          <form onSubmit={addRecurring}>
+            <select aria-label="Recurring type" value={rec.kind} onChange={(e) => setRec({ ...rec, kind: e.target.value as 'income' | 'expense' })}>
+              <option value="expense">Expense</option>
+              <option value="income">Income</option>
+            </select>
+            <input aria-label="Recurring name" placeholder="Name (e.g. Rent)" value={rec.name} onChange={(e) => setRec({ ...rec, name: e.target.value })} />
+            <input aria-label="Recurring amount" type="number" min="0" step="1" placeholder="Amount" value={rec.amount} onChange={(e) => setRec({ ...rec, amount: e.target.value })} />
+            {rec.kind === 'expense' && (
+              <select aria-label="Recurring category" value={rec.category} onChange={(e) => setRec({ ...rec, category: e.target.value })}>
+                {CATEGORIES.map((c) => <option key={c}>{c}</option>)}
+              </select>
+            )}
+            <input aria-label="Day of month" type="number" min="1" max="31" placeholder="Day" value={rec.day} onChange={(e) => setRec({ ...rec, day: e.target.value })} />
+            <button>Add rule</button>
+          </form>
+          <ul>
+            {state.recurring.map((r) => (
+              <li key={r.id}>
+                <span>{r.name}</span>
+                <small>{r.kind === 'income' ? 'Income' : r.category} · monthly on day {r.dayOfMonth}</small>
+                <b className={r.kind === 'income' ? 'pos' : 'neg'}>{money(r.amount)}</b>
+                <button className="x" aria-label={`Delete rule ${r.name}`} onClick={() => setState((p) => ({ ...p, recurring: p.recurring.filter((x) => x.id !== r.id) }))}>×</button>
+              </li>
+            ))}
+            {!state.recurring.length && <li className="empty">No recurring items yet.</li>}
+          </ul>
+          {!!state.recurring.length && <button onClick={generateNext}>Generate next 3 months</button>}
         </section>
 
         <section className="wide">

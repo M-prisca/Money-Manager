@@ -4,6 +4,7 @@ export type Income = {
   amount: number
   date: string
   received: boolean
+  source?: string
 }
 
 export type Expense = {
@@ -13,6 +14,7 @@ export type Expense = {
   category: string
   date: string
   paid: boolean
+  source?: string
 }
 
 export type Goal = {
@@ -22,11 +24,22 @@ export type Goal = {
   saved: number
 }
 
+export type Recurring = {
+  id: string
+  kind: 'income' | 'expense'
+  name: string
+  amount: number
+  category: string
+  dayOfMonth: number
+  startMonth: string
+}
+
 export type State = {
   incomes: Income[]
   expenses: Expense[]
   goals: Goal[]
   startingBalance: number
+  recurring: Recurring[]
 }
 
 export const CATEGORIES = [

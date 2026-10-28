@@ -24,6 +24,20 @@ describe('App', () => {
     expect(within(card('Available now')).getByText(/250,000/)).toBeInTheDocument()
   })
 
+  it('generates recurring entries without duplicating them', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    await user.type(screen.getByLabelText('Recurring name'), 'Netflix')
+    await user.type(screen.getByLabelText('Recurring amount'), '8000')
+    await user.click(screen.getByRole('button', { name: 'Add rule' }))
+    await user.click(screen.getByRole('button', { name: 'Generate next 3 months' }))
+    expect(screen.getByRole('status')).toHaveTextContent('Added 3 recurring entries')
+    expect(screen.getAllByLabelText('Paid: Netflix')).toHaveLength(3)
+    await user.click(screen.getByRole('button', { name: 'Generate next 3 months' }))
+    expect(screen.getByRole('status')).toHaveTextContent('Nothing new')
+    expect(screen.getAllByLabelText('Paid: Netflix')).toHaveLength(3)
+  })
+
   it('edits an existing expense', async () => {
     const user = userEvent.setup()
     render(<App />)

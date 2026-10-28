@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import type { State } from './types'
 
 const KEY = 'money-manager-v1'
-const empty: State = { incomes: [], expenses: [], goals: [], startingBalance: 0 }
+const empty: State = { incomes: [], expenses: [], goals: [], startingBalance: 0, recurring: [] }
 
 function load(): State {
   try {
@@ -26,7 +26,8 @@ export function parseBackup(text: string): State | null {
     const d = JSON.parse(text)
     if (!d || !Array.isArray(d.incomes) || !Array.isArray(d.expenses) || !Array.isArray(d.goals)) return null
     const startingBalance = typeof d.startingBalance === 'number' ? d.startingBalance : 0
-    return { incomes: d.incomes, expenses: d.expenses, goals: d.goals, startingBalance }
+    const recurring = Array.isArray(d.recurring) ? d.recurring : []
+    return { incomes: d.incomes, expenses: d.expenses, goals: d.goals, startingBalance, recurring }
   } catch {
     return null
   }
