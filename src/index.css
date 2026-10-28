@@ -6,6 +6,12 @@ h1 { margin: 0; }
 header { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
 button.ghost { background: #e5e7eb; color: #111827; }
 .message { background: #fef3c7; padding: 8px 12px; border-radius: 8px; }
+.afford { background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 20px; box-shadow: 0 1px 3px #0001; }
+.afford input { padding: 8px; border: 1px solid #d1d5db; border-radius: 8px; font: inherit; width: 220px; max-width: 100%; }
+.afford p { margin: 12px 0 0; font-weight: 600; }
+.afford-yes { color: #059669; }
+.afford-risky { color: #b45309; }
+.afford-no { color: #dc2626; }
 .timeline { background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 20px; box-shadow: 0 1px 3px #0001; overflow-x: auto; }
 .timeline table { width: 100%; border-collapse: collapse; }
 .timeline th, .timeline td { text-align: right; padding: 6px 8px; border-top: 1px solid #f3f4f6; }

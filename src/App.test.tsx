@@ -58,6 +58,17 @@ describe('App', () => {
     expect(screen.getByText(/Overdue/)).toBeInTheDocument()
   })
 
+  it('answers the affordability check', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    await user.type(screen.getByLabelText('Starting balance'), '100000')
+    await user.type(screen.getByLabelText('Amount to check'), '40000')
+    expect(screen.getByTestId('afford-result')).toHaveTextContent(/^Yes/)
+    await user.clear(screen.getByLabelText('Amount to check'))
+    await user.type(screen.getByLabelText('Amount to check'), '500000')
+    expect(screen.getByTestId('afford-result')).toHaveTextContent(/^No/)
+  })
+
   it('edits an existing expense', async () => {
     const user = userEvent.setup()
     render(<App />)

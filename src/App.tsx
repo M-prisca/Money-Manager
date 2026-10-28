@@ -4,6 +4,7 @@ import { useStore, uid, parseBackup } from './lib/store'
 import { generateEntries } from './lib/recurring'
 import { buildTimeline, firstShortfall } from './lib/timeline'
 import { planGoal } from './lib/goals'
+import { canAfford } from './lib/afford'
 import { CATEGORIES } from './lib/types'
 import type { Expense, Goal, Income } from './lib/types'
 
@@ -20,6 +21,9 @@ export default function App() {
   const s = summarize(state)
   const timeline = buildTimeline(state, today().slice(0, 7), 6)
   const shortfall = firstShortfall(timeline)
+  const [checkAmount, setCheckAmount] = useState('')
+  const checkValue = parseFloat(checkAmount)
+  const afford = checkValue > 0 ? canAfford(s, timeline, checkValue) : null
 
   const [inc, setInc] = useState(emptyInc)
   const [exp, setExp] = useState(emptyExp)
@@ -171,6 +175,27 @@ export default function App() {
         <Card label="Forecast" value={s.forecast} hint="After expected income & planned expenses" />
         <Card label="Safe to spend" value={s.safeToSpend} hint="Won't break your plans" accent />
         <Card label="Saved for goals" value={s.allocated} hint="Allocated to goals" />
+      </section>
+
+      <section className="afford">
+        <h2>Can I afford this?</h2>
+        <input
+          aria-label="Amount to check"
+          type="number"
+          min="0"
+          step="1"
+          placeholder="Amount in RWF"
+          value={checkAmount}
+          onChange={(e) => setCheckAmount(e.target.value)}
+        />
+        {afford && (
+          <p data-testid="afford-result" className={`afford-${afford.verdict}`}>
+            {afford.verdict === 'yes' && `Yes. You would still have ${money(afford.remainingSafe)} safe to spend.`}
+            {afford.verdict === 'risky' &&
+              `Risky. You have the money now, but your balance would go negative${afford.shortMonth ? ` in ${monthLabel(afford.shortMonth)}` : ''}.`}
+            {afford.verdict === 'no' && `No. You only have ${money(s.available)} available now.`}
+          </p>
+        )}
       </section>
 
       <section className="timeline">
