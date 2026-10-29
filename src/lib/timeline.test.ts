@@ -3,7 +3,7 @@ import { buildTimeline, firstShortfall } from './timeline'
 import type { State } from './types'
 
 const st = (p: Partial<State> = {}): State => ({
-  incomes: [], expenses: [], goals: [], startingBalance: 0, recurring: [], ...p,
+  incomes: [], expenses: [], goals: [], startingBalance: 0, recurring: [], categories: [], ...p,
 })
 const inc = (amount: number, date: string, received = false) => ({ id: date + amount, name: 'x', amount, date, received })
 const exp = (amount: number, date: string, paid = false) => ({ id: date + amount, name: 'x', amount, category: 'Other', date, paid })

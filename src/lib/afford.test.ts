@@ -5,7 +5,7 @@ import { buildTimeline } from './timeline'
 import type { State } from './types'
 
 const st = (p: Partial<State> = {}): State => ({
-  incomes: [], expenses: [], goals: [], startingBalance: 0, recurring: [], ...p,
+  incomes: [], expenses: [], goals: [], startingBalance: 0, recurring: [], categories: [], ...p,
 })
 const exp = (amount: number, date: string) => ({ id: date + amount, name: 'x', amount, category: 'Other', date, paid: false })
 

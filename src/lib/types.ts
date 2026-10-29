@@ -41,6 +41,7 @@ export type State = {
   goals: Goal[]
   startingBalance: number
   recurring: Recurring[]
+  categories: string[]
 }
 
 export const CATEGORIES = [

@@ -45,7 +45,22 @@ describe('App', () => {
     await user.type(screen.getByLabelText('Expense name'), 'Trip')
     await user.type(screen.getByLabelText('Expense amount'), '50000')
     await user.click(screen.getAllByRole('button', { name: 'Add' })[1])
-    expect(screen.getByRole('alert')).toHaveTextContent('You would run short in')
+    expect(screen.getByText(/You would run short in/)).toBeInTheDocument()
+    expect(screen.getByText(/exceed expected income/)).toBeInTheDocument()
+  })
+
+  it('adds a custom category and uses it in spending by category', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    await user.type(screen.getByLabelText('New category'), 'Gym')
+    await user.click(screen.getByRole('button', { name: 'Add category' }))
+    await user.selectOptions(screen.getByLabelText('Expense category'), 'Gym')
+    await user.type(screen.getByLabelText('Expense name'), 'Membership')
+    await user.type(screen.getByLabelText('Expense amount'), '20000')
+    await user.click(screen.getAllByRole('button', { name: 'Add' })[1])
+    const section = screen.getByText('Spending by category').closest('section') as HTMLElement
+    expect(within(section).getByText('Gym')).toBeInTheDocument()
+    expect(within(section).getByText('100%')).toBeInTheDocument()
   })
 
   it('shows overdue status for a goal past its deadline', async () => {

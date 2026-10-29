@@ -6,7 +6,7 @@ const rule = (p: Partial<Recurring> = {}): Recurring => ({
   id: 'r1', kind: 'expense', name: 'Netflix', amount: 8000, category: 'Subscriptions', dayOfMonth: 5, startMonth: '2025-01', ...p,
 })
 const st = (recurring: Recurring[], p: Partial<State> = {}): State => ({
-  incomes: [], expenses: [], goals: [], startingBalance: 0, recurring, ...p,
+  incomes: [], expenses: [], goals: [], startingBalance: 0, recurring, categories: [], ...p,
 })
 
 describe('addMonths', () => {

@@ -4,7 +4,7 @@ import { parseBackup } from './store'
 describe('parseBackup', () => {
   it('accepts a valid backup', () => {
     const json = JSON.stringify({ incomes: [], expenses: [], goals: [], startingBalance: 5000 })
-    expect(parseBackup(json)).toEqual({ incomes: [], expenses: [], goals: [], startingBalance: 5000, recurring: [] })
+    expect(parseBackup(json)).toEqual({ incomes: [], expenses: [], goals: [], startingBalance: 5000, recurring: [], categories: [] })
   })
 
   it('defaults the starting balance for older backups', () => {

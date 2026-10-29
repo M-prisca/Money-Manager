@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { summarize } from './finance'
 import type { State } from './types'
 
-const st = (p: Partial<State> = {}): State => ({ incomes: [], expenses: [], goals: [], startingBalance: 0, recurring: [], ...p })
+const st = (p: Partial<State> = {}): State => ({ incomes: [], expenses: [], goals: [], startingBalance: 0, recurring: [], categories: [], ...p })
 const inc = (amount: number, received: boolean) => ({ id: 'i', name: 'x', amount, date: '2025-01-01', received })
 const exp = (amount: number, paid: boolean) => ({ id: 'e', name: 'x', amount, category: 'Other', date: '2025-01-01', paid })
 const goal = (saved: number) => ({ id: 'g', name: 'x', target: 1_000_000, saved })

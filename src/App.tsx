@@ -6,6 +6,7 @@ import { buildTimeline, firstShortfall } from './lib/timeline'
 import { planGoal } from './lib/goals'
 import { canAfford } from './lib/afford'
 import { CATEGORIES } from './lib/types'
+import { addCategory, allCategories, plannedExceedsIncome, spendingByCategory } from './lib/categories'
 import type { Expense, Goal, Income } from './lib/types'
 
 const today = () => new Date().toISOString().slice(0, 10)
@@ -21,6 +22,9 @@ export default function App() {
   const s = summarize(state)
   const timeline = buildTimeline(state, today().slice(0, 7), 6)
   const shortfall = firstShortfall(timeline)
+  const categories = allCategories(state)
+  const byCategory = spendingByCategory(state.expenses)
+  const [newCategory, setNewCategory] = useState('')
   const [checkAmount, setCheckAmount] = useState('')
   const checkValue = parseFloat(checkAmount)
   const afford = checkValue > 0 ? canAfford(s, timeline, checkValue) : null
@@ -34,6 +38,17 @@ export default function App() {
   const [message, setMessage] = useState('')
   const [rec, setRec] = useState(emptyRec)
   const fileRef = useRef<HTMLInputElement>(null)
+
+  const submitCategory = (e: React.FormEvent) => {
+    e.preventDefault()
+    const name = addCategory(categories, newCategory)
+    if (!name) {
+      setMessage('Enter a new category name that does not already exist.')
+      return
+    }
+    setState((p) => ({ ...p, categories: [...p.categories, name] }))
+    setNewCategory('')
+  }
 
   const addRecurring = (e: React.FormEvent) => {
     e.preventDefault()
@@ -198,6 +213,12 @@ export default function App() {
         )}
       </section>
 
+      {plannedExceedsIncome(s.planned, s.expected) && (
+        <p role="alert" className="message">
+          Planned expenses ({money(s.planned)}) exceed expected income ({money(s.expected)}). The difference comes out of your current balance.
+        </p>
+      )}
+
       <section className="timeline">
         <h2>Next 6 months</h2>
         {shortfall ? (
@@ -268,7 +289,7 @@ export default function App() {
             <input aria-label="Expense name" placeholder="Expense" value={exp.name} onChange={(e) => setExp({ ...exp, name: e.target.value })} />
             <input aria-label="Expense amount" type="number" min="0" step="1" placeholder="Amount" value={exp.amount} onChange={(e) => setExp({ ...exp, amount: e.target.value })} />
             <select aria-label="Expense category" value={exp.category} onChange={(e) => setExp({ ...exp, category: e.target.value })}>
-              {CATEGORIES.map((c) => <option key={c}>{c}</option>)}
+              {categories.map((c) => <option key={c}>{c}</option>)}
             </select>
             <input aria-label="Expense date" type="date" value={exp.date} onChange={(e) => setExp({ ...exp, date: e.target.value })} />
             <button>{editExp ? 'Save' : 'Add'}</button>
@@ -301,6 +322,25 @@ export default function App() {
         </section>
 
         <section className="wide">
+          <h2>Spending by category</h2>
+          <ul>
+            {byCategory.map((c) => (
+              <li key={c.category}>
+                <span>{c.category}</span>
+                <small>{Math.round(c.share * 100)}%</small>
+                <b className="neg">{money(c.total)}</b>
+                <span />
+              </li>
+            ))}
+            {!byCategory.length && <li className="empty">No expenses yet.</li>}
+          </ul>
+          <form onSubmit={submitCategory}>
+            <input aria-label="New category" placeholder="New category" value={newCategory} onChange={(e) => setNewCategory(e.target.value)} />
+            <button>Add category</button>
+          </form>
+        </section>
+
+        <section className="wide">
           <h2>Recurring items</h2>
           <form onSubmit={addRecurring}>
             <select aria-label="Recurring type" value={rec.kind} onChange={(e) => setRec({ ...rec, kind: e.target.value as 'income' | 'expense' })}>
@@ -311,7 +351,7 @@ export default function App() {
             <input aria-label="Recurring amount" type="number" min="0" step="1" placeholder="Amount" value={rec.amount} onChange={(e) => setRec({ ...rec, amount: e.target.value })} />
             {rec.kind === 'expense' && (
               <select aria-label="Recurring category" value={rec.category} onChange={(e) => setRec({ ...rec, category: e.target.value })}>
-                {CATEGORIES.map((c) => <option key={c}>{c}</option>)}
+                {categories.map((c) => <option key={c}>{c}</option>)}
               </select>
             )}
             <input aria-label="Day of month" type="number" min="1" max="31" placeholder="Day" value={rec.day} onChange={(e) => setRec({ ...rec, day: e.target.value })} />
