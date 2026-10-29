@@ -36,10 +36,10 @@ Done when: you can see, for each upcoming month, the projected balance and wheth
 Done when: you can answer "can I spend X on Y?" without doing math.
 
 ## Phase 3: Polish
-- [ ] Mobile-first layout pass
-- [ ] Installable PWA with offline support
-- [ ] Dark mode
-- [ ] Accessibility pass (labels, keyboard use, contrast)
+- [x] Mobile-first layout pass
+- [x] Installable PWA with offline support
+- [x] Dark mode
+- [x] Accessibility pass (labels, keyboard use, contrast)
 
 ## Phase 4: Only if needed
 - [ ] Sync across devices (cloud backend and login)

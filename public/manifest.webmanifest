@@ -1,0 +1,11 @@
+{
+  "name": "Money Manager",
+  "short_name": "Money",
+  "description": "Know where your money is, where it's going, and what you can afford.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f3f4f6",
+  "theme_color": "#047857",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}
