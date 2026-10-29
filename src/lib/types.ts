@@ -14,6 +14,7 @@ export type Expense = {
   category: string
   date: string
   paid: boolean
+  actual?: number
   source?: string
 }
 

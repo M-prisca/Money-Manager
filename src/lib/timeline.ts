@@ -1,3 +1,4 @@
+import { cost } from './finance'
 import { addMonths } from './recurring'
 import type { State } from './types'
 
@@ -17,7 +18,7 @@ export function buildTimeline(state: State, fromYm: string, months: number): Mon
   let balance =
     state.startingBalance +
     state.incomes.filter((i) => i.received).reduce((a, i) => a + i.amount, 0) -
-    state.expenses.filter((e) => e.paid).reduce((a, e) => a + e.amount, 0) -
+    state.expenses.filter((e) => e.paid).reduce((a, e) => a + cost(e), 0) -
     state.goals.reduce((a, g) => a + g.saved, 0)
 
   const rows: MonthRow[] = []

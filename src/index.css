@@ -82,3 +82,8 @@ input, select { background: var(--surface); }
   .timeline th, .timeline td { padding: 6px 4px; font-size: .85rem; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+input.actual { width: 90px; margin-left: 8px; padding: 4px 6px; border: 1px solid var(--border); border-radius: 6px; font: inherit; }
+.hint { color: var(--muted); margin: 0 0 8px; font-size: .9rem; }
+.variance { width: 100%; border-collapse: collapse; overflow-x: auto; }
+.variance th, .variance td { text-align: right; padding: 6px 8px; border-top: 1px solid var(--line); }
+.variance th:first-child, .variance td:first-child { text-align: left; }

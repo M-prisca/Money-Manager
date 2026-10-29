@@ -5,6 +5,7 @@ import { generateEntries } from './lib/recurring'
 import { buildTimeline, firstShortfall } from './lib/timeline'
 import { planGoal } from './lib/goals'
 import { canAfford } from './lib/afford'
+import { plannedVsActual } from './lib/report'
 import { CATEGORIES } from './lib/types'
 import { addCategory, allCategories, plannedExceedsIncome, spendingByCategory } from './lib/categories'
 import type { Expense, Goal, Income } from './lib/types'
@@ -24,6 +25,11 @@ export default function App() {
   const shortfall = firstShortfall(timeline)
   const categories = allCategories(state)
   const byCategory = spendingByCategory(state.expenses)
+  const variance = plannedVsActual(state.expenses)
+  const setActual = (id: string, raw: string) => {
+    const v = parseFloat(raw)
+    setState((p) => ({ ...p, expenses: p.expenses.map((y) => (y.id === id ? { ...y, actual: v >= 0 ? v : undefined } : y)) }))
+  }
   const [newCategory, setNewCategory] = useState('')
   const [checkAmount, setCheckAmount] = useState('')
   const checkValue = parseFloat(checkAmount)
@@ -309,7 +315,12 @@ export default function App() {
                   />
                   <span>{x.name}</span>
                 </label>
-                <small>{x.category} · {x.date}{x.paid ? '' : ' · planned'}</small>
+                <small>
+                  {x.category} · {x.date}{x.paid ? '' : ' · planned'}
+                  {x.paid && (
+                    <input className="actual" aria-label={`Actual cost: ${x.name}`} type="number" min="0" step="1" placeholder="Actual" value={x.actual ?? ''} onChange={(e) => setActual(x.id, e.target.value)} />
+                  )}
+                </small>
                 <b className="neg">{money(x.amount)}</b>
                 <span>
                   <button className="x" aria-label={`Edit ${x.name}`} onClick={() => startEditExpense(x)}>✎</button>
@@ -338,6 +349,27 @@ export default function App() {
             <input aria-label="New category" placeholder="New category" value={newCategory} onChange={(e) => setNewCategory(e.target.value)} />
             <button>Add category</button>
           </form>
+        </section>
+
+        <section className="wide">
+          <h2>Planned vs actual</h2>
+          <p className="hint">Enter the actual cost on a paid expense to compare it with your estimate.</p>
+          <table className="variance">
+            <thead>
+              <tr><th>Category</th><th>Estimated</th><th>Actual</th><th>Difference</th></tr>
+            </thead>
+            <tbody>
+              {variance.map((r) => (
+                <tr key={r.category}>
+                  <td>{r.category}</td>
+                  <td>{money(r.estimated)}</td>
+                  <td>{money(r.actual)}</td>
+                  <td className={r.diff > 0 ? 'neg' : r.diff < 0 ? 'pos' : ''}>{r.diff > 0 ? '+' : ''}{money(r.diff)}</td>
+                </tr>
+              ))}
+              {!variance.length && <tr><td colSpan={4} className="empty">No paid expenses yet.</td></tr>}
+            </tbody>
+          </table>
         </section>
 
         <section className="wide">

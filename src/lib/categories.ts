@@ -1,5 +1,6 @@
 import type { Expense, State } from './types'
 import { CATEGORIES } from './types'
+import { cost } from './finance'
 
 export type CategoryTotal = { category: string; total: number; share: number }
 
@@ -7,7 +8,7 @@ export const allCategories = (s: State) => [...CATEGORIES, ...s.categories]
 
 export function spendingByCategory(expenses: Expense[]): CategoryTotal[] {
   const totals = new Map<string, number>()
-  for (const e of expenses) totals.set(e.category, (totals.get(e.category) ?? 0) + e.amount)
+  for (const e of expenses) totals.set(e.category, (totals.get(e.category) ?? 0) + cost(e))
   const all = [...totals.values()].reduce((a, b) => a + b, 0)
   return [...totals]
     .map(([category, total]) => ({ category, total, share: all ? total / all : 0 }))

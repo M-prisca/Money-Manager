@@ -41,6 +41,12 @@ Done when: you can answer "can I spend X on Y?" without doing math.
 - [x] Dark mode
 - [x] Accessibility pass (labels, keyboard use, contrast)
 
+## Phase 3b: Gaps from the original concept
+- [x] Planned vs actual: record the actual cost of a paid expense and compare by category
+- [ ] Reserve money for specific planned expenses
+- [ ] Monthly category budgets
+- [ ] CSV export
+
 ## Phase 4: Only if needed
 - [ ] Sync across devices (cloud backend and login)
 - [ ] Import from mobile money or bank statements

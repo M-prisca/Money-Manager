@@ -1,11 +1,13 @@
-import type { State } from './types'
+import type { Expense, State } from './types'
+
+export const cost = (e: Expense) => (e.paid ? (e.actual ?? e.amount) : e.amount)
 
 const sum = (xs: number[]) => xs.reduce((a, b) => a + b, 0)
 
 export function summarize(s: State) {
   const received = sum(s.incomes.filter((i) => i.received).map((i) => i.amount))
   const expected = sum(s.incomes.filter((i) => !i.received).map((i) => i.amount))
-  const paid = sum(s.expenses.filter((e) => e.paid).map((e) => e.amount))
+  const paid = sum(s.expenses.filter((e) => e.paid).map(cost))
   const planned = sum(s.expenses.filter((e) => !e.paid).map((e) => e.amount))
   const allocated = sum(s.goals.map((g) => g.saved))
 

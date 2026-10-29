@@ -112,3 +112,19 @@ describe('App', () => {
     expect(screen.getByText('Laptop')).toBeInTheDocument()
   })
 })
+
+describe('Planned vs actual', () => {
+  it('records the actual cost of a paid expense and shows the difference', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    await user.type(screen.getByLabelText('Starting balance'), '100000')
+    await user.type(screen.getByLabelText('Expense name'), 'Taxi')
+    await user.type(screen.getByLabelText('Expense amount'), '10000')
+    await user.click(screen.getAllByRole('button', { name: 'Add' })[1])
+    await user.click(screen.getByLabelText('Paid: Taxi'))
+    await user.type(screen.getByLabelText('Actual cost: Taxi'), '12000')
+    const section = screen.getByText('Planned vs actual').closest('section') as HTMLElement
+    expect(within(section).getByText(/\+.*2,000/)).toBeInTheDocument()
+    expect(within(card('Available now')).getByText(/88,000/)).toBeInTheDocument()
+  })
+})
