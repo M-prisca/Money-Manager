@@ -15,6 +15,7 @@ export type Expense = {
   date: string
   paid: boolean
   actual?: number
+  reserved?: number
   source?: string
 }
 

@@ -128,3 +128,21 @@ describe('Planned vs actual', () => {
     expect(within(card('Available now')).getByText(/88,000/)).toBeInTheDocument()
   })
 })
+
+describe('Reserving money', () => {
+  it('reserves for a planned expense without changing available cash', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    await user.type(screen.getByLabelText('Starting balance'), '100000')
+    await user.type(screen.getByLabelText('Expense name'), 'Gown')
+    await user.type(screen.getByLabelText('Expense amount'), '40000')
+    await user.click(screen.getAllByRole('button', { name: 'Add' })[1])
+    await user.type(screen.getByLabelText('Reserve for: Gown'), '25000')
+    expect(within(card('Available now')).getByText(/100,000/)).toBeInTheDocument()
+    expect(within(card('Reserved')).getByText(/25,000/)).toBeInTheDocument()
+    expect(within(card('Safe to spend')).getByText(/60,000/)).toBeInTheDocument()
+    await user.click(screen.getByLabelText('Paid: Gown'))
+    expect(within(card('Reserved')).getByText(/RWF\s0/)).toBeInTheDocument()
+    expect(within(card('Available now')).getByText(/60,000/)).toBeInTheDocument()
+  })
+})

@@ -43,7 +43,7 @@ Done when: you can answer "can I spend X on Y?" without doing math.
 
 ## Phase 3b: Gaps from the original concept
 - [x] Planned vs actual: record the actual cost of a paid expense and compare by category
-- [ ] Reserve money for specific planned expenses
+- [x] Reserve money for specific planned expenses
 - [ ] Monthly category budgets
 - [ ] CSV export
 

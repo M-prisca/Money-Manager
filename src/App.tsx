@@ -30,6 +30,10 @@ export default function App() {
     const v = parseFloat(raw)
     setState((p) => ({ ...p, expenses: p.expenses.map((y) => (y.id === id ? { ...y, actual: v >= 0 ? v : undefined } : y)) }))
   }
+  const setReserved = (id: string, raw: string) => {
+    const v = parseFloat(raw)
+    setState((p) => ({ ...p, expenses: p.expenses.map((y) => (y.id === id ? { ...y, reserved: v > 0 ? Math.min(v, y.amount) : undefined } : y)) }))
+  }
   const [newCategory, setNewCategory] = useState('')
   const [checkAmount, setCheckAmount] = useState('')
   const checkValue = parseFloat(checkAmount)
@@ -194,7 +198,8 @@ export default function App() {
       <section className="cards">
         <Card label="Available now" value={s.available} hint="Received − paid − saved" />
         <Card label="Forecast" value={s.forecast} hint="After expected income & planned expenses" />
-        <Card label="Safe to spend" value={s.safeToSpend} hint="Won't break your plans" accent />
+        <Card label="Safe to spend" value={s.safeToSpend} hint="Available − reserved, within forecast" accent />
+        <Card label="Reserved" value={s.reserved} hint="Set aside for planned expenses" />
         <Card label="Saved for goals" value={s.allocated} hint="Allocated to goals" />
       </section>
 
@@ -317,6 +322,9 @@ export default function App() {
                 </label>
                 <small>
                   {x.category} · {x.date}{x.paid ? '' : ' · planned'}
+                  {!x.paid && (
+                    <input className="actual" aria-label={`Reserve for: ${x.name}`} type="number" min="0" step="1" placeholder="Reserve" value={x.reserved ?? ''} onChange={(e) => setReserved(x.id, e.target.value)} />
+                  )}
                   {x.paid && (
                     <input className="actual" aria-label={`Actual cost: ${x.name}`} type="number" min="0" step="1" placeholder="Actual" value={x.actual ?? ''} onChange={(e) => setActual(x.id, e.target.value)} />
                   )}
